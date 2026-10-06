@@ -1,0 +1,9 @@
+<h2>Confirm your email</h2>
+<p>Thanks for signing up. Click the button below to confirm your email address and open your library.</p>
+<p>
+  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/account"
+     style="display:inline-block;padding:12px 20px;border-radius:999px;background:#17171B;color:#ffffff;text-decoration:none;font-weight:600">
+    Confirm my email
+  </a>
+</p>
+<p style="color:#6A6A72;font-size:14px">If you didn't create an account, you can ignore this email.</p>

@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raster — Lena Albrecht</title>
+<meta name="description" content="Lena Albrecht — Product Designer in Zürich. Swiss typographic portfolio template.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: strict 12-column raster made visible (dashed column lines), flush-left type, one signal red used only for action and reveal. */
+:root{
+  --paper:#F3F3F0; --paper-2:#E9E9E5; --white:#FFFFFF;
+  --ink:#0F0F0E; --ink-2:#3B3B38; --grey:#76766F; --line:#D5D5CF; --line-2:#C4C4BD;
+  --red:#FF3B1F; --red-ink:#C42A12;
+  --f-sans:"Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --ease:cubic-bezier(.65,0,.35,1); --out:cubic-bezier(.16,1,.3,1);
+  --g:clamp(16px,3vw,40px); --col-gap:clamp(12px,1.6vw,24px); --max:1440px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-sans);font-size:17px;line-height:1.5;letter-spacing:-.005em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.menu-open{overflow:hidden}
+a{color:inherit}
+::selection{background:var(--red);color:var(--white)}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--g);position:relative}
+.grid12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--col-gap)}
+.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.02em;text-transform:uppercase;font-weight:500}
+.grey{color:var(--grey)}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:99;background:var(--ink);color:var(--white);padding:8px}
+
+/* the visible raster */
+.raster{position:fixed;inset:0;z-index:0;pointer-events:none;transition:opacity .5s}
+.raster .wrap{height:100%}
+.raster .grid12{height:100%}
+.raster span{border-left:1px dashed var(--line);height:100%}
+.raster span:last-child{border-right:1px dashed var(--line)}
+body.grid-off .raster{opacity:0}
+body.grid-strong .raster span{border-color:rgba(255,59,31,.35)}
+main,header,footer{position:relative;z-index:1}
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.hdr .grid12{align-items:center;height:64px}
+.brand{grid-column:1/4;text-decoration:none;font-weight:600;letter-spacing:-.02em;font-size:16px;display:flex;align-items:center;gap:8px}
+.brand i{width:10px;height:10px;background:var(--red);display:inline-block;transition:transform .5s var(--out)}
+.brand:hover i{transform:rotate(90deg) scale(1.3)}
+.hdr-meta{grid-column:4/7}
+.hdr nav{grid-column:7/13;display:flex;justify-content:flex-end;gap:4px}
+.pill{font:500 14px var(--f-sans);text-decoration:none;padding:7px 14px;border-radius:999px;background:var(--paper-2);color:var(--ink);border:0;cursor:pointer;transition:background .3s,color .3s;position:relative;overflow:hidden;isolation:isolate}
+.pill::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .45s var(--out);z-index:-1}
+.pill:hover::before,.pill.active::before{transform:none}
+.pill:hover,.pill.active{color:var(--paper)}
+.pill.grid-t{font-family:var(--f-mono);font-size:12px}
+.menu-btn{display:none}
+@media (max-width:820px){.hdr-meta{display:none}.hdr nav .pill:not(.menu-btn){display:none}.hdr nav .menu-btn{display:inline-block}.brand{grid-column:1/9}.hdr nav{grid-column:9/13}}
+.mnav{position:fixed;inset:0;z-index:50;background:var(--red);color:var(--white);padding:calc(env(safe-area-inset-top,0px) + 18px) var(--g) calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;justify-content:space-between;transform:translateY(-101%);transition:transform .7s var(--ease)}
+body.menu-open .mnav{transform:none}
+.mnav .top{display:flex;justify-content:space-between;align-items:center}
+.mnav button{background:var(--white);color:var(--ink);border:0;border-radius:999px;padding:7px 14px;font:500 14px var(--f-sans)}
+.mnav nav{display:flex;flex-direction:column}
+.mnav nav a{font-size:clamp(48px,15vw,88px);font-weight:600;letter-spacing:-.05em;line-height:1;text-decoration:none;border-top:1px solid rgba(255,255,255,.35);padding:10px 0;display:flex;justify-content:space-between;align-items:baseline}
+.mnav nav a .mono{font-size:12px}
+
+/* reveals */
+[data-r]{transition:opacity .8s var(--out),transform .8s var(--out);transition-delay:var(--d,0s)}
+[data-r].pre{opacity:0;transform:translateY(20px)}
+.wipe{position:relative;display:inline;color:var(--ink)}
+.line{display:block;position:relative;width:fit-content;max-width:100%}
+.line .t{display:inline}
+.line .b{position:absolute;inset:-.02em -.06em;background:var(--red);transform-origin:left;transform:scaleX(0);pointer-events:none}
+.play .line .b{animation:blockwipe 1.1s var(--ease) forwards;animation-delay:calc(var(--i)*.14s + .2s)}
+.play .line .t{animation:showtext 1.1s steps(1) forwards;animation-delay:calc(var(--i)*.14s + .2s);opacity:0}
+@keyframes blockwipe{0%{transform:scaleX(0);transform-origin:left}45%{transform:scaleX(1);transform-origin:left}55%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+@keyframes showtext{0%{opacity:0}50%{opacity:1}100%{opacity:1}}
+
+/* transition */
+.sweep{position:fixed;inset:0;z-index:80;background:var(--red);transform:translateX(-101%);pointer-events:none;display:flex;align-items:flex-end;padding:var(--g)}
+.sweep span{font-size:clamp(40px,9vw,140px);font-weight:600;letter-spacing:-.05em;color:var(--white);line-height:.9}
+
+/* hero */
+.hero{padding-block:clamp(40px,8vw,120px) clamp(40px,6vw,80px);row-gap:28px}
+.hero-id{grid-column:1/6}
+.hero-id h1{font-size:clamp(28px,2.6vw,36px);font-weight:600;letter-spacing:-.035em;margin:0;line-height:1.05}
+.typer{margin-top:6px;color:var(--grey);min-height:1.4em}
+.typer .cur{display:inline-block;width:.55em;height:1em;background:var(--ink);vertical-align:-.14em;margin-left:2px;animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.hero-loc{margin-top:clamp(40px,8vw,120px);display:grid;gap:4px}
+.hero-statement{grid-column:6/13}
+.hero-statement p{margin:0;font-size:clamp(30px,4vw,62px);line-height:1.04;font-weight:500;letter-spacing:-.04em}
+.hero-statement .after{margin-top:22px;display:flex;gap:24px;flex-wrap:wrap}
+.hero-statement .after a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.hero-statement .after a:hover{color:var(--red)}
+@media (max-width:820px){.hero-id,.hero-statement{grid-column:1/-1}.hero-loc{margin-top:24px}}
+
+/* section header */
+.sec{padding-block:clamp(56px,8vw,112px)}
+.sec-h{border-top:1px solid var(--ink);padding-top:14px;margin-bottom:clamp(28px,4vw,56px);align-items:start}
+.sec-h .mono:first-child{grid-column:1/4}
+.sec-h h2{grid-column:4/10;margin:0;font-size:clamp(28px,3.4vw,48px);font-weight:500;letter-spacing:-.04em;line-height:1}
+.sec-h .right{grid-column:10/13;justify-self:end;display:flex;gap:4px}
+@media (max-width:820px){.sec-h .mono:first-child{grid-column:1/-1;margin-bottom:10px}.sec-h h2{grid-column:1/-1}.sec-h .right{grid-column:1/-1;justify-self:start;margin-top:16px}}
+
+/* index table */
+.index{border-bottom:1px solid var(--line-2)}
+.row{text-decoration:none;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--col-gap);padding:22px 0;border-top:1px solid var(--line-2);position:relative;isolation:isolate;align-items:baseline}
+.row::before{content:"";position:absolute;inset:0 calc(var(--g) * -.5);background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--out);z-index:-1}
+.row:hover::before,.row:focus-visible::before{transform:scaleY(1)}
+.row:hover,.row:focus-visible{color:var(--paper)}
+.row:hover .grey,.row:focus-visible .grey{color:#A9A9A2}
+.row > *{transition:transform .5s var(--out)}
+.row:hover .r-title{transform:translateX(12px)}
+.r-no{grid-column:1/2}
+.r-title{grid-column:2/7;font-size:clamp(22px,2.4vw,34px);font-weight:500;letter-spacing:-.035em;line-height:1.08}
+.r-client{grid-column:7/9}
+.r-disc{grid-column:9/12}
+.r-year{grid-column:12/13;justify-self:end}
+.r-arrow{position:absolute;right:0;top:50%;transform:translate(10px,-50%);opacity:0;color:var(--red)}
+.row:hover .r-arrow{opacity:1;transform:translate(0,-50%)}
+@media (max-width:820px){.r-no{grid-column:1/3}.r-title{grid-column:3/-1}.r-client{grid-column:3/8;margin-top:8px}.r-disc{display:none}.r-year{grid-column:8/-1;margin-top:8px}}
+.peek{position:fixed;left:0;top:0;width:340px;aspect-ratio:4/3;z-index:20;pointer-events:none;border-radius:4px;overflow:hidden;opacity:0;transform:translate(-50%,-50%) scale(.8);transition:opacity .3s,transform .4s var(--out);box-shadow:0 30px 60px -20px rgba(0,0,0,.35)}
+.peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.peek .art{position:absolute;inset:0}
+@media (hover:none),(max-width:820px){.peek{display:none}}
+.cards{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--col-gap)}
+.view-grid .cards{display:grid}.view-grid .index{display:none}
+.card{text-decoration:none;display:grid;gap:12px}
+.card .art{aspect-ratio:4/5;border-radius:4px;overflow:hidden;position:relative;max-width:100%}
+.card .art > *{transition:transform 1s var(--out)}
+.card:hover .art > *{transform:scale(1.04)}
+.card h3{margin:0;font-size:22px;font-weight:500;letter-spacing:-.03em;line-height:1.1}
+.card .meta{display:flex;justify-content:space-between}
+@media (max-width:820px){.cards{grid-template-columns:1fr}}
+
+/* art posters */
+.poster{position:absolute;inset:0;display:grid;overflow:hidden;container-type:size}
+.p-halde{background:#E4E7DF;padding:8%;grid-template-columns:repeat(4,1fr);gap:6px;align-content:center}
+.p-halde i{aspect-ratio:1;border-radius:50%;background:var(--white);display:grid;place-items:center;font-style:normal;font-family:var(--f-mono);font-size:10px;color:var(--ink-2)}
+.p-halde i.r{background:var(--red);color:var(--white)}
+.p-halde b{grid-column:1/-1;font-size:13%;}
+.p-bern{background:var(--ink);color:var(--paper);padding:9%;align-content:space-between}
+.p-bern .big{font-size:min(30cqw,26cqh);font-weight:600;letter-spacing:-.06em;line-height:.85}
+.p-bern .big em{font-style:normal;color:var(--red)}
+.p-bern .zones{display:flex;gap:4px}.p-bern .zones span{flex:1;height:8px;background:#333}.p-bern .zones span.on{background:var(--red)}
+.p-sana{background:var(--white);padding:9%;align-content:center;gap:10px}
+.p-sana .bar{display:flex;height:34px}.p-sana .bar span{height:100%}
+.p-sana .lbl{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--grey)}
+.p-sana .total{font-size:min(13cqw,14cqh);font-weight:600;letter-spacing:-.05em;line-height:1}
+.p-grotesk{background:var(--red);color:var(--white);place-items:center}
+.p-grotesk .aa{font-size:min(60cqw,80cqh);font-weight:700;letter-spacing:-.08em;line-height:.8}
+.p-grotesk .sub{position:absolute;left:8%;bottom:7%;font-family:var(--f-mono);font-size:11px}
+.p-a11y{background:var(--paper-2);padding:9%;grid-template-columns:1fr 1fr;gap:8px;align-content:center}
+.p-a11y .sw{aspect-ratio:1;display:grid;place-items:center;font-size:12cqw;font-weight:600;letter-spacing:-.04em}
+.p-a11y .ratio{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ink);padding-top:8px}
+.p-a11y .ratio b{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;font-weight:600}
+.p-phone{position:absolute;left:50%;top:12%;width:42%;aspect-ratio:9/19;transform:translateX(-50%);background:var(--white);border-radius:22px;box-shadow:0 0 0 6px var(--ink);padding:10% 6%;display:flex;flex-direction:column;gap:6px}
+
+.feat{padding-bottom:clamp(24px,4vw,48px);row-gap:var(--col-gap)}
+.feat a{grid-column:span 4;text-decoration:none;display:grid;gap:10px;min-width:0}
+.feat a:first-child{grid-column:span 5}.feat a:nth-child(2){grid-column:span 4}.feat a:nth-child(3){grid-column:span 3}
+.feat .art{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden;max-width:100%}
+.feat a:first-child .art{aspect-ratio:5/5}
+.feat .art > *{transition:transform 1.1s var(--out)}
+.feat a:hover .art > *{transform:scale(1.05)}
+.feat .meta{display:flex;justify-content:space-between;gap:8px}
+.feat a:hover .meta span:first-child{color:var(--red)}
+@media (max-width:820px){.feat{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding-bottom:16px}.feat a,.feat a:first-child,.feat a:nth-child(n){flex:0 0 78%;scroll-snap-align:start}.feat a .art,.feat a:first-child .art{aspect-ratio:4/5}}
+/* about strip */
+.intro{row-gap:32px}
+.intro .lead{grid-column:4/11;font-size:clamp(22px,2.2vw,30px);line-height:1.25;letter-spacing:-.025em;margin:0;font-weight:400}
+.intro .lead em{font-style:normal;color:var(--red)}
+.facts{grid-column:4/13;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--col-gap)}
+.fact{border-top:1px solid var(--line-2);padding-top:12px}
+.fact b{display:block;font-size:clamp(36px,4.4vw,64px);font-weight:500;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+@media (max-width:820px){.intro .lead,.facts{grid-column:1/-1}.facts{grid-template-columns:repeat(2,1fr)}}
+
+/* services */
+.svc{border-top:1px solid var(--line-2)}
+.svc-row{border-bottom:1px solid var(--line-2)}
+.svc-btn{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--col-gap);padding:22px 0;align-items:baseline}
+.svc-btn:focus-visible{outline:2px solid var(--red)}
+.svc-btn .mono{grid-column:1/4}
+.svc-btn h3{grid-column:4/11;margin:0;font-size:clamp(22px,2.4vw,34px);font-weight:500;letter-spacing:-.035em}
+.svc-btn .pm{grid-column:12/13;justify-self:end;width:22px;height:22px;position:relative}
+.svc-btn .pm::before,.svc-btn .pm::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.5px;background:var(--ink);transition:transform .4s var(--out)}
+.svc-btn .pm::after{transform:rotate(90deg)}
+.svc-row.open .pm::after{transform:rotate(0)}
+.svc-row.open .svc-btn h3{color:var(--red)}
+.svc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--out)}
+.svc-row.open .svc-body{grid-template-rows:1fr}
+.svc-body > div{overflow:hidden}
+.svc-body .grid12{padding-bottom:26px}
+.svc-body p{grid-column:4/9;margin:0;color:var(--ink-2)}
+.svc-body ul{grid-column:9/13;margin:0;padding:0;list-style:none;font-family:var(--f-mono);font-size:13px;display:grid;gap:4px;color:var(--ink-2)}
+@media (max-width:820px){.svc-btn .mono{grid-column:1/-1;margin-bottom:6px}.svc-btn h3{grid-column:1/11}.svc-body p,.svc-body ul{grid-column:1/-1}.svc-body ul{margin-top:14px}}
+
+/* contact */
+.contact-big{display:block;text-decoration:none;font-size:clamp(44px,10.5vw,176px);font-weight:600;letter-spacing:-.065em;line-height:.88;margin:0 0 0 -.04em;word-break:break-word;cursor:pointer;background:none;border:0;padding:0;text-align:left;color:var(--ink);font-family:var(--f-sans)}
+.contact-big span{display:inline-block;transition:transform .5s var(--out),color .3s}
+.contact-big:hover span{color:var(--red)}
+.contact-row{margin-top:clamp(28px,4vw,48px);row-gap:28px}
+.contact-row .c1{grid-column:1/4}
+.contact-row .c2{grid-column:4/9}
+.contact-row .c3{grid-column:9/13}
+.contact-row a{display:block;text-decoration:none}
+.contact-row a:hover{color:var(--red)}
+form.min{display:grid;gap:12px}
+.inp{width:100%;font:inherit;background:transparent;border:0;border-bottom:1px solid var(--ink);padding:10px 0;border-radius:0;color:var(--ink)}
+.inp::placeholder{color:var(--grey)}
+.inp:focus{outline:none;border-bottom-color:var(--red)}
+textarea.inp{resize:vertical;min-height:80px}
+.send{justify-self:start;background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:12px 20px;font:500 14px var(--f-sans);cursor:pointer;transition:background .3s}
+.send:hover{background:var(--red)}
+.form-msg{font-family:var(--f-mono);font-size:12px;min-height:1.4em}
+.form-msg.bad{color:var(--red-ink)}
+@media (max-width:820px){.contact-row .c1,.contact-row .c2,.contact-row .c3{grid-column:1/-1}}
+
+/* footer */
+.foot{border-top:1px solid var(--ink);padding-block:20px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.foot .grid12 > *{grid-column:span 3}
+.foot a{text-decoration:none}.foot a:hover{color:var(--red)}
+.foot .up{justify-self:end;cursor:pointer;background:none;border:0;font:inherit;color:inherit}
+@media (max-width:820px){.foot .grid12 > *{grid-column:span 6;margin-bottom:10px}}
+
+/* case study */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--red);width:100%;transform:scaleX(0);transform-origin:left;z-index:40}
+.cs-head{padding-block:clamp(32px,6vw,88px) 32px;row-gap:24px}
+.cs-head .crumb{grid-column:1/-1;display:flex;gap:10px}
+.cs-head .crumb a{text-decoration:none}.cs-head .crumb a:hover{color:var(--red)}
+.cs-head h1{grid-column:1/11;font-size:clamp(40px,7vw,112px);font-weight:600;letter-spacing:-.06em;line-height:.9;margin:0;text-wrap:balance}
+.cs-head .sum{grid-column:6/12;font-size:clamp(19px,1.6vw,23px);line-height:1.35;letter-spacing:-.015em;margin:0;color:var(--ink-2)}
+@media (max-width:820px){.cs-head h1,.cs-head .sum{grid-column:1/-1}}
+.cs-cover{aspect-ratio:16/8;position:relative;border-radius:4px;overflow:hidden;max-width:100%}
+@media (max-width:820px){.cs-cover{aspect-ratio:4/5}}
+.cs-body{padding-block:clamp(48px,7vw,96px);align-items:start}
+.cs-meta{grid-column:1/4;position:sticky;top:96px;display:grid;gap:18px}
+.cs-meta div{border-top:1px solid var(--line-2);padding-top:8px}
+.cs-meta dd{margin:4px 0 0;font-size:15px}
+.cs-meta .toc{display:grid;gap:2px;border:0;padding:0}
+.cs-meta .toc a{text-decoration:none;font-family:var(--f-mono);font-size:12px;padding:3px 0;color:var(--grey);transition:color .2s}
+.cs-meta .toc a.on{color:var(--red)}
+.cs-content{grid-column:5/12;min-width:0}
+.cs-step{margin-bottom:clamp(48px,6vw,88px);scroll-margin-top:90px}
+.cs-step > .mono:first-child{color:var(--red)}
+.cs-step h2{font-size:clamp(28px,3vw,44px);font-weight:500;letter-spacing:-.045em;line-height:1.02;margin:10px 0 18px}
+.cs-step p{margin:0 0 14px;max-width:62ch;color:var(--ink-2)}
+.cs-fig{aspect-ratio:3/2;position:relative;border-radius:4px;overflow:hidden;margin:28px 0 8px;max-width:100%}
+.cs-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--col-gap);margin-top:24px}
+.cs-stats div{border-top:2px solid var(--ink);padding-top:10px}
+.cs-stats b{display:block;font-size:clamp(36px,4.4vw,64px);font-weight:500;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.cs-stats span{font-size:14px;color:var(--ink-2)}
+.cs-decisions{display:grid;gap:0;margin-top:18px;border-top:1px solid var(--line-2)}
+.cs-decisions div{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:14px 0;border-bottom:1px solid var(--line-2);font-size:15px}
+.cs-decisions s{color:var(--grey)}
+@media (max-width:820px){.cs-meta{grid-column:1/-1;position:static;grid-template-columns:repeat(2,1fr)}.cs-meta .toc{display:none}.cs-content{grid-column:1/-1}.cs-stats{grid-template-columns:1fr}.cs-decisions div{grid-template-columns:1fr;gap:4px}}
+.cs-next{display:block;text-decoration:none;border-top:1px solid var(--ink);padding-block:28px 60px}
+.cs-next .grid12 > .mono{grid-column:1/4}
+.cs-next h3{grid-column:4/13;margin:0;font-size:clamp(40px,7vw,112px);font-weight:600;letter-spacing:-.06em;line-height:.9;transition:color .3s,transform .6s var(--out)}
+.cs-next:hover h3{color:var(--red);transform:translateX(16px)}
+
+/* about */
+.cv{border-top:1px solid var(--ink)}
+.cv-row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--col-gap);padding:16px 0;border-bottom:1px solid var(--line-2);align-items:baseline}
+.cv-row > :nth-child(1){grid-column:1/4}
+.cv-row > :nth-child(2){grid-column:4/8;font-weight:500;font-size:19px;letter-spacing:-.02em}
+.cv-row > :nth-child(3){grid-column:8/12;color:var(--ink-2);font-size:15px}
+.cv-row > :nth-child(4){grid-column:12/13;justify-self:end}
+@media (max-width:820px){.cv-row > *{grid-column:1/-1!important;justify-self:start!important}}
+.principles{counter-reset:p;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--col-gap)}
+.principles li{list-style:none;border-top:1px solid var(--ink);padding-top:12px}
+.principles h4{margin:8px 0 6px;font-size:21px;font-weight:500;letter-spacing:-.03em}
+.principles p{margin:0;color:var(--ink-2);font-size:15px}
+@media (max-width:820px){.principles{grid-template-columns:1fr}}
+.portrait{grid-column:9/13;aspect-ratio:3/4;background:var(--ink);position:relative;overflow:hidden;border-radius:4px;max-width:100%}
+.portrait::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 1px,transparent 1px 6px)}
+.portrait span{position:absolute;left:12px;bottom:12px;color:var(--paper)}
+.portrait i{position:absolute;left:50%;top:26%;width:40%;aspect-ratio:1;border-radius:50%;background:var(--red);transform:translateX(-50%)}
+
+.toast{position:fixed;right:var(--g);bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:90;background:var(--ink);color:var(--paper);padding:10px 14px;font-family:var(--f-mono);font-size:12px;text-transform:uppercase;transform:translateY(160%);visibility:hidden;transition:transform .5s var(--out)}
+.toast.on{transform:none;visibility:visible}
+kbd{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line-2);border-radius:3px;padding:1px 5px;background:var(--white)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  [data-r].pre{opacity:1;transform:none}.play .line .t{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#app">Skip to content</a>
+<div class="raster" aria-hidden="true"><div class="wrap"><div class="grid12"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="hdr"><div class="wrap"><div class="grid12">
+  <a class="brand" href="#top"><i aria-hidden="true"></i>Lena Albrecht</a>
+  <span class="hdr-meta mono grey">Zürich <span id="clock">--:--</span> CET</span>
+  <nav aria-label="Primary">
+    <a class="pill" href="#work" data-nav="work">Work</a>
+    <a class="pill" href="#about" data-nav="about">About</a>
+    <a class="pill" href="#contact">Contact</a>
+    <button class="pill grid-t" id="gridBtn" type="button" aria-pressed="true" title="Toggle grid (G)">Grid</button>
+    <button class="pill menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mnav">Menu</button>
+  </nav>
+</div></div></header>
+
+<div class="mnav" id="mnav" aria-hidden="true">
+  <div class="top"><b>Lena Albrecht</b><button id="menuClose" type="button">Close</button></div>
+  <nav aria-label="Mobile"><a href="#work">Work <span class="mono">01</span></a><a href="#about">About <span class="mono">02</span></a><a href="#contact">Contact <span class="mono">03</span></a></nav>
+  <span class="mono">hello@lenaalbrecht.ch</span>
+</div>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="foot"><div class="wrap"><div class="grid12 mono">
+  <span>© 2026 Lena Albrecht</span>
+  <span><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a> / <a href="https://www.behance.net" target="_blank" rel="noopener">Behance</a></span>
+  <span class="grey">Press <kbd>G</kbd> to toggle the grid</span>
+  <button class="up" id="toTop" type="button">Back to top ↑</button>
+</div></div></footer>
+
+<div class="peek" id="peek" aria-hidden="true"></div>
+<div class="sweep" aria-hidden="true"><span id="sweepLabel"></span></div>
+<div class="toast" role="status" aria-live="polite" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const ART={
+halde:()=>`<div class="poster p-halde">${['Obst','Brot','Milch','Käse','Bio','Neu','Snack','Wein','Baby','Tier','Haus','Mehr'].map((t,i)=>`<i class="${i===4?'r':''}">${t}</i>`).join('')}</div>`,
+bern:()=>`<div class="poster p-bern"><span class="mono">Zone 100 · 101 · Day pass</span><div class="big">2<em>.</em><br>taps</div><div><div class="zones">${[1,1,1,0,0,0,0,0].map(o=>`<span class="${o?'on':''}"></span>`).join('')}</div><span class="mono" style="display:block;margin-top:10px">CHF 8.80 · valid until 05:00</span></div></div>`,
+sana:()=>`<div class="poster p-sana"><span class="mono grey">Monthly premium, 2027</span><div class="total">CHF 412.60</div><div class="bar"><span style="width:58%;background:var(--ink)"></span><span style="width:22%;background:var(--red)"></span><span style="width:12%;background:var(--line-2)"></span><span style="width:8%;background:var(--paper-2)"></span></div><div class="lbl"><span>Basic 239.30</span><span>Supplementary 90.80</span><span>Accident 49.50</span></div><div class="lbl"><span>Deductible CHF 1,500</span><span>Saving vs 2026 · CHF 31</span></div></div>`,
+grotesk:()=>`<div class="poster p-grotesk"><span class="aa">Aa</span><span class="sub">Grotesk Club · Neue Halt 400–800</span></div>`,
+a11y:()=>`<div class="poster p-a11y"><div class="sw" style="background:var(--ink);color:var(--white)">Aa</div><div class="sw" style="background:#FF8A75;color:#5C1206">Aa</div><div class="ratio"><span class="mono">Before 2.9:1</span><b>7.4:1</b></div><span class="mono grey" style="grid-column:1/-1">WCAG 2.2 AA · 214 issues closed</span></div>`
+};
+
+const P=[
+{slug:'halde-discovery',no:'01',title:'Navigation for 4,000 groceries',client:'Halde',disc:'Product design, research',year:'2026',art:'halde',
+ sum:'Designing the category layer of a quick-commerce app that grew faster than people could browse it.',
+ meta:[['Role','Lead product designer'],['Team','1 PM, 4 eng, 1 researcher'],['Timeline','14 weeks'],['Platform','iOS, Android']],
+ steps:[
+  ['Context','Halde delivers groceries in Zürich and Basel within 20 minutes. The catalogue grew from 900 to 4,000 products in a year, while the home screen kept the same eight category tiles. Search carried 71% of orders, which meant people who did not know exactly what they wanted simply left.'],
+  ['Research','I ran 18 contextual interviews in customers’ kitchens and a card sort with 64 participants. People grouped products by meal, not by aisle. “Something for tonight” was a real category in their heads; “Dry goods” was not.'],
+  ['Structure','We moved to a two-level system: twelve broad shelves on home, each opening a scrollable row of sub-shelves with real product photography. Meal-based collections sit beside them, curated weekly by the merchandising team.'],
+  ['Design','Shelf tiles use one circular image grammar so they scan as a set. Sub-shelf chips stick to the top while scrolling, and the cart total stays visible at all times because price anxiety was the second biggest reason for drop-off.'],
+  ['Outcome','After a four-week A/B test with 40,000 customers, the new navigation shipped to everyone.']],
+ decisions:[['Infinite home feed','Twelve fixed shelves'],['Text-only sub-categories','Photographed chips'],['Hidden cart total','Sticky cart total']],
+ stats:[['+19%','orders started from browse'],['−12%','time to first add-to-cart'],['3.1','sub-shelves visited per session']]},
+{slug:'bern-mobility',no:'02',title:'A transit ticket in two taps',client:'BERNMOBIL',disc:'Product design',year:'2025',art:'bern',
+ sum:'Reducing the ticket purchase flow for a city transit app from nine steps to two, without losing the edge cases.',
+ meta:[['Role','Product designer'],['Agency','Studio Feld, Bern'],['Timeline','10 weeks'],['Platform','iOS, Android, Web']],
+ steps:[
+  ['Context','Buying a single ticket took nine screens and the zone map was a scanned PDF. Tourists gave up; locals bought from machines.'],
+  ['Research','Ride logs showed 82% of tickets were for the same three zone combinations. Everyone else needed help, not more options.'],
+  ['Structure','The app now suggests the right ticket from your location and destination. One tap to confirm, one tap to pay. Every other combination is one screen away under “Choose zones myself”.'],
+  ['Design','A dark ticket view with a large validity timer works in sunlight and is readable by inspectors from a metre away.'],
+  ['Outcome','The new flow launched in spring 2025 across Bern and the surrounding region.']],
+ decisions:[['Zone map first','Destination first'],['Nine-step wizard','Suggest, confirm, pay'],['Light ticket','High-contrast dark ticket']],
+ stats:[['9 → 2','steps to buy a single ticket'],['+34%','tickets sold in-app'],['4.7★','App Store rating, up from 3.2']]},
+{slug:'sana-premiums',no:'03',title:'Making a premium readable',client:'Sana Versicherung',disc:'UX, content design',year:'2025',art:'sana',
+ sum:'Turning a twelve-page insurance offer into one screen a person can explain to their partner.',
+ meta:[['Role','UX & content designer'],['Team','Digital sales squad'],['Timeline','8 weeks'],['Platform','Web']],
+ steps:[
+  ['Context','Swiss health insurance changes every November and customers compare offers in a hurry. Sana’s offer was a PDF where the monthly total appeared on page four.'],
+  ['Research','In twelve usability sessions, nobody could tell us what their deductible meant in francs. Everybody could tell us their monthly total if we showed it first.'],
+  ['Structure','One number first, then what it is made of, then what you would pay if something happens. Legal detail moved into expandable sections in plain language reviewed with compliance.'],
+  ['Design','A single stacked bar shows the parts of the premium. A slider shows how a higher deductible lowers the monthly cost and raises the risk, in francs.'],
+  ['Outcome','The offer page went live for the 2026 switching season.']],
+ decisions:[['PDF offer','One-screen summary'],['Percentages','Amounts in CHF'],['Legal text inline','Plain language + details']],
+ stats:[['+27%','online offers signed'],['−41%','calls about “what am I paying for”'],['1','screen instead of 12 pages']]},
+{slug:'grotesk-club',no:'04',title:'A storefront for a type foundry',client:'Grotesk Club',disc:'Web design, art direction',year:'2024',art:'grotesk',
+ sum:'A typeface shop where you can test every weight with your own words before you buy a licence.',
+ meta:[['Role','Designer & front-end'],['Client','Independent foundry, Lausanne'],['Timeline','6 weeks'],['Stack','Astro, variable fonts']],
+ steps:[
+  ['Context','The foundry sold through a marketplace that rendered fonts as images. Designers could not try them in context, so they did not buy.'],
+  ['Research','I interviewed six art directors about how they choose type. All of them test with their own client copy before anything else.'],
+  ['Structure','Every typeface page opens with an editable specimen that remembers your text across fonts. Licensing is calculated as you type company size.'],
+  ['Design','The site is set entirely in the foundry’s own families. Red is used once per page, on the buy button.'],
+  ['Outcome','Direct sales replaced the marketplace within a year.']],
+ decisions:[['Image specimens','Live, editable text'],['Licence PDF','Instant price calculator'],['Many accents','One red per page']],
+ stats:[['3.8×','revenue from direct sales'],['62%','visitors who type in a specimen'],['0','marketplace fees']]},
+{slug:'halde-accessibility',no:'05',title:'Halde for everyone',client:'Halde',disc:'Accessibility, design system',year:'2024',art:'a11y',
+ sum:'Bringing a grocery app to WCAG 2.2 AA and making accessibility part of the design system, not a later audit.',
+ meta:[['Role','Accessibility lead'],['Team','Design system, 3 people'],['Timeline','5 months'],['Standard','WCAG 2.2 AA']],
+ steps:[
+  ['Context','An external audit found 214 issues, from colour contrast to unlabeled buttons. Most had been introduced in the previous year.'],
+  ['Research','I tested with nine people who use screen readers, switch control or large text daily, paid for their time.'],
+  ['Structure','Every component in the design system got an accessibility spec next to its visual spec: focus order, labels, contrast tokens and minimum tap size.'],
+  ['Design','We rebuilt the colour palette around contrast-safe pairs, so designers could no longer pick a failing combination.'],
+  ['Outcome','The app passed a re-audit and accessibility checks now run in every pull request.']],
+ decisions:[['Audit once a year','Checks in every PR'],['Free colour picks','Contrast-safe pairs'],['Accessibility as QA','Accessibility in specs']],
+ stats:[['214','audit issues closed'],['7.4:1','minimum text contrast on brand red'],['9','paid participants with disabilities']]}
+];
+
+/* views */
+const roleWords=['Product designer','Accessibility advocate','Systems thinker','Occasional type nerd'];
+function splitLines(lines){return lines.map((l,i)=>`<span class="line" style="--i:${i}"><span class="t">${l}</span><span class="b" aria-hidden="true"></span></span>`).join('')}
+
+function contact(){return `<section class="sec" id="contact"><div class="wrap">
+ <div class="grid12 sec-h" data-r><span class="mono">Contact</span><h2>Available from January 2027 for product design roles in Zürich or remote.</h2></div>
+ <button class="contact-big" type="button" data-copy="hello@lenaalbrecht.ch" aria-label="Copy email address hello@lenaalbrecht.ch">${'hello@lena albrecht.ch'.split('').map(c=>c===' '?'<br>':`<span>${c}</span>`).join('')}</button>
+ <div class="grid12 contact-row">
+  <div class="c1 mono grey">Click the address to copy it</div>
+  <div class="c2"><span class="mono grey">Elsewhere</span><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://www.behance.net" target="_blank" rel="noopener">Behance ↗</a><a href="https://read.cv" target="_blank" rel="noopener">Read.cv ↗</a></div>
+  <form class="c3 min" id="minForm" novalidate><span class="mono grey">Or leave a message</span>
+   <label class="skip" for="m-email">Email</label><input class="inp" id="m-email" type="email" placeholder="Your email" autocomplete="email">
+   <label class="skip" for="m-msg">Message</label><textarea class="inp" id="m-msg" placeholder="What are you working on?"></textarea>
+   <button class="send" type="submit">Send</button><span class="form-msg" id="formMsg" aria-live="polite"></span></form>
+ </div></div></section>`}
+
+function home(){
+ return `<section class="wrap" id="top"><div class="grid12 hero">
+  <div class="hero-id"><h1>Lena Albrecht</h1><div class="typer mono" aria-live="off"><span id="typer">${roleWords[0]}</span><span class="cur" aria-hidden="true"></span></div>
+   <div class="hero-loc mono grey"><span>Based in Zürich</span><span>47.3769° N, 8.5417° E</span><span>Previously Halde, Studio Feld</span></div></div>
+  <div class="hero-statement play"><p aria-label="I design interfaces people understand on the first try. Clear, accessible, deliberately quiet.">${splitLines(['I design interfaces','people understand on','the first try. Clear,','accessible, deliberately quiet.'])}</p>
+   <div class="after mono"><a href="#work">Selected work ↓</a><a href="#about">About me</a><a href="https://read.cv" target="_blank" rel="noopener">CV ↗</a></div></div>
+ </div></section>
+
+ <section class="wrap" aria-label="Featured projects"><div class="grid12 feat">${['halde-discovery','bern-mobility','grotesk-club'].map((sl,i)=>{const p=P.find(x=>x.slug===sl);return `<a href="#work-${p.slug}" data-r style="--d:${.3+i*.08}s"><div class="art">${ART[p.art]()}</div><div class="meta mono"><span>${p.no} ${p.title}</span><span class="grey">${p.year}</span></div></a>`}).join('')}</div></section>
+
+ <section class="sec" id="work"><div class="wrap" id="workWrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Index — 05 projects</span><h2>Selected work, 2024–2026</h2>
+   <div class="right" role="group" aria-label="Layout"><button class="pill active" type="button" data-view="index" aria-pressed="true">Index</button><button class="pill" type="button" data-view="grid" aria-pressed="false">Grid</button></div></div>
+  <div class="index">${P.map((p,i)=>`<a class="row" href="#work-${p.slug}" data-art="${p.art}" data-r style="--d:${i*.05}s"><span class="r-no mono grey">${p.no}</span><span class="r-title">${p.title}</span><span class="r-client">${p.client}</span><span class="r-disc grey">${p.disc}</span><span class="r-year mono">${p.year}</span><span class="r-arrow" aria-hidden="true">→</span></a>`).join('')}</div>
+  <div class="cards">${P.map(p=>`<a class="card" href="#work-${p.slug}"><div class="art">${ART[p.art]()}</div><div class="meta mono grey"><span>${p.no} · ${p.client}</span><span>${p.year}</span></div><h3>${p.title}</h3></a>`).join('')}</div>
+ </div></section>
+
+ <section class="sec"><div class="wrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Profile</span><h2>Six years, three cities, one rule: remove until it breaks.</h2></div>
+  <div class="grid12 intro"><p class="lead" data-r>I’m a product designer working on everyday services: groceries, transit, insurance. I studied visual communication at ZHdK and I still design from a grid, with words first. My work is accessible by default and <em>tested with real people</em> before it is polished.</p>
+   <div class="facts">${[['6','years in product'],['18','products shipped'],['9','languages designed for'],['AA','WCAG standard, always']].map(([n,l],i)=>`<div class="fact" data-r style="--d:${i*.06}s"><b data-count="${n}">${n}</b><span class="mono grey">${l}</span></div>`).join('')}</div></div>
+ </div></section>
+
+ <section class="sec"><div class="wrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Services</span><h2>How I can help</h2></div>
+  <div class="svc">${[
+   ['Product design','End-to-end features, from research to shipped UI','I work inside product teams, own a problem area and ship it. Discovery, flows, prototypes, specs, and QA on device.',['Discovery & interviews','Flows & prototypes','Interface writing','Design QA']],
+   ['Design systems','Components, tokens and documentation','Systems that are small enough to remember and strict where it matters: colour contrast, spacing, focus states.',['Token architecture','Component specs','Figma libraries','Adoption plans']],
+   ['Accessibility','Audits, fixes and training to WCAG 2.2 AA','Audits with real assistive technology users, fixes prioritised by impact, and a workshop so it stays fixed.',['Expert audits','Testing with AT users','Contrast-safe palettes','Team workshops']]
+  ].map((s,i)=>`<div class="svc-row ${i===0?'open':''}"><button class="svc-btn" type="button" aria-expanded="${i===0}"><span class="mono grey">${String(i+1).padStart(2,'0')}</span><h3>${s[0]}</h3><span class="pm" aria-hidden="true"></span></button><div class="svc-body"><div><div class="grid12"><p>${s[2]}</p><ul>${s[3].map(x=>`<li>— ${x}</li>`).join('')}</ul></div></div></div></div>`).join('')}</div>
+ </div></section>
+ ${contact()}`;
+}
+
+function cs(p){
+ const i=P.indexOf(p), nx=P[(i+1)%P.length];
+ const ids=p.steps.map(s=>s[0].toLowerCase());
+ return `<article><section class="wrap"><div class="grid12 cs-head">
+  <div class="crumb mono grey"><a href="#work">Index</a><span>/</span><span>${p.no} ${p.client}</span></div>
+  <h1 class="play" aria-label="${p.title}">${splitLines([p.title])}</h1>
+  <p class="sum" data-r>${p.sum}</p></div>
+  <div class="cs-cover" data-r>${ART[p.art]()}</div></section>
+ <section class="wrap"><div class="grid12 cs-body">
+  <dl class="cs-meta">${p.meta.map(([k,v])=>`<div><dt class="mono grey">${k}</dt><dd>${v}</dd></div>`).join('')}
+   <div><dt class="mono grey">Year</dt><dd>${p.year}</dd></div>
+   <nav class="toc" aria-label="Sections">${ids.map((id,k)=>`<a href="#work-${p.slug}" data-to="s-${id}">${String(k+1).padStart(2,'0')} ${p.steps[k][0]}</a>`).join('')}</nav></dl>
+  <div class="cs-content">${p.steps.map(([h,t],k)=>`<div class="cs-step" id="s-${ids[k]}" data-r><span class="mono">${String(k+1).padStart(2,'0')} — ${h}</span><h2>${['What was going on','What we learned','How it is organised','What it looks like','What changed'][k]}</h2><p>${t}</p>
+   ${k===2?`<div class="cs-decisions">${p.decisions.map(([a,b])=>`<div><s>${a}</s><span>→ ${b}</span></div>`).join('')}</div>`:''}
+   ${k===3?`<div class="cs-fig">${ART[p.art]()}</div><span class="mono grey">Final screens, production build</span>`:''}
+   ${k===4?`<div class="cs-stats">${p.stats.map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join('')}</div>`:''}</div>`).join('')}</div>
+ </div></section>
+ <a class="cs-next" href="#work-${nx.slug}"><div class="wrap grid12"><span class="mono grey">Next — ${nx.no}</span><h3>${nx.title}</h3></div></a></article>
+ ${contact()}`;
+}
+
+function about(){
+ return `<section class="wrap"><div class="grid12 cs-head">
+  <div class="crumb mono grey"><span>About</span></div>
+  <h1 class="play" style="grid-column:1/9" aria-label="Clear before clever.">${splitLines(['Clear before','clever.'])}</h1>
+  <div class="portrait" data-r><i></i><span class="mono">Portrait · 3:4</span></div>
+  <p class="sum" style="grid-column:1/8" data-r>I grew up in Winterthur, studied visual communication at the Zürich University of the Arts and spent two years in a Basel type studio before moving into product. Today I design everyday services and teach a module on interface typography at ZHdK.</p>
+ </div></section>
+ <section class="sec"><div class="wrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Experience</span><h2>Where I’ve worked</h2></div>
+  <div class="cv">${[['2024 — now','Halde','Senior Product Designer · navigation, accessibility, design system','ZH'],['2022 — 2024','Studio Feld','Product Designer · transit and public-sector clients','BE'],['2020 — 2022','Sana Versicherung','UX Designer · digital sales','ZH'],['2018 — 2020','Atelier Brunner','Typographer · books and identities','BS']].map(r=>`<div class="cv-row" data-r><span class="mono grey">${r[0]}</span><span>${r[1]}</span><span>${r[2]}</span><span class="mono">${r[3]}</span></div>`).join('')}</div>
+ </div></section>
+ <section class="sec"><div class="wrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Principles</span><h2>Three rules I work by</h2></div>
+  <ol class="principles" style="padding:0;margin:0">${[['Words first','If the sentence is unclear, no layout will save it. I write the copy before I draw the screen.'],['Accessible by default','Contrast, focus and labels are part of the first draft, never a ticket for later.'],['Test, then polish','A rough prototype in front of five people beats a perfect file nobody has touched.']].map((x,i)=>`<li data-r style="--d:${i*.06}s"><span class="mono grey">Rule ${i+1}</span><h4>${x[0]}</h4><p>${x[1]}</p></li>`).join('')}</ol>
+ </div></section>
+ <section class="sec"><div class="wrap">
+  <div class="grid12 sec-h" data-r><span class="mono">Toolkit</span><h2>Tools &amp; recognition</h2></div>
+  <div class="cv">${[['Design','Figma, Framer, Protopie','Variables, prototyping, handoff',''],['Code','HTML, CSS, Astro','Enough to build my own site and specimens',''],['Research','Dovetail, Maze','Interviews, card sorts, usability tests',''],['Award','Best of Swiss Web 2025','Silver, Public Service — BERNMOBIL',''],['Teaching','ZHdK','Interface Typography module, since 2024','']].map(r=>`<div class="cv-row" data-r><span class="mono grey">${r[0]}</span><span>${r[1]}</span><span>${r[2]}</span><span></span></div>`).join('')}</div>
+ </div></section>
+ ${contact()}`;
+}
+
+/* router */
+const app=$('#app'); let cur=null,busy=false;
+function parse(){const h=location.hash.slice(1);
+ if(h.startsWith('work-')){const p=P.find(x=>x.slug===h.slice(5));if(p)return{key:'cs-'+p.slug,v:'cs',p}}
+ if(h==='about')return{key:'about',v:'about'};
+ return{key:'home',v:'home',sec:['top','work','contact'].includes(h)?h:null}}
+function anim(el,kf,o){return reduce?Promise.resolve():el.animate(kf,{fill:'forwards',...o}).finished}
+async function go(){
+ const r=parse(); closeMenu();
+ if(r.key===cur){ if(r.sec) toSection(r.sec); return; }
+ if(busy)return; busy=true;
+ const first=cur===null, sw=$('.sweep');
+ if(!first){ $('#sweepLabel').textContent=r.v==='cs'?r.p.client:r.v==='about'?'About':'Index';
+  await anim(sw,[{transform:'translateX(-101%)'},{transform:'translateX(0)'}],{duration:620,easing:'cubic-bezier(.65,0,.35,1)'}); }
+ cur=r.key;
+ app.innerHTML=r.v==='cs'?cs(r.p):r.v==='about'?about():home();
+ document.title=r.v==='cs'?`${r.p.title} — Lena Albrecht`:r.v==='about'?'About — Lena Albrecht':'Raster — Lena Albrecht';
+ $$('.hdr nav [data-nav]').forEach(a=>a.classList.toggle('active',(r.v==='about'&&a.dataset.nav==='about')||(r.v==='cs'&&a.dataset.nav==='work')));
+ jump(0); init(r);
+ if(r.sec) requestAnimationFrame(()=>toSection(r.sec,true));
+ if(!first){ app.focus({preventScroll:true}); await anim(sw,[{transform:'translateX(0)'},{transform:'translateX(101%)'}],{duration:620,delay:80,easing:'cubic-bezier(.65,0,.35,1)'}); }
+ busy=false;
+}
+
+/* scroll */
+let lenis=null;
+if(window.Lenis&&!reduce){lenis=new Lenis({lerp:.1});const raf=t=>{lenis.raf(t);requestAnimationFrame(raf)};requestAnimationFrame(raf)}
+const jump=y=>lenis?lenis.scrollTo(y,{immediate:true,force:true}):scrollTo(0,y);
+function toSection(id,inst){const el=document.getElementById(id);if(!el)return;if(id==='top'){lenis?lenis.scrollTo(0,{immediate:!!inst}):scrollTo({top:0,behavior:inst?'auto':'smooth'});return}
+ lenis?lenis.scrollTo(el,{offset:-64,immediate:!!inst}):el.scrollIntoView({behavior:inst?'auto':'smooth'})}
+
+/* page init */
+let io,tocIo,typeT;
+function init(r){
+ io&&io.disconnect(); tocIo&&tocIo.disconnect(); clearTimeout(typeT);
+ io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});
+ $$('[data-r]',app).forEach(el=>{if(!reduce&&el.getBoundingClientRect().top>innerHeight*.9){el.classList.add('pre');io.observe(el)}});
+
+ // typewriter
+ const ty=$('#typer',app);
+ if(ty&&!reduce){let w=0,c=roleWords[0].length,del=true;
+  const step=()=>{const word=roleWords[w];
+   if(del){c--;if(c<=0){del=false;w=(w+1)%roleWords.length}}
+   else{c++;if(c>=roleWords[w].length){del=true;ty.textContent=roleWords[w];typeT=setTimeout(step,2200);return}}
+   ty.textContent=roleWords[del?w:w].slice(0,Math.max(c,0));typeT=setTimeout(step,del?40:85)};
+  typeT=setTimeout(step,2600);}
+
+ // index / grid switch
+ $$('[data-view]',app).forEach(b=>b.onclick=()=>{$$('[data-view]',app).forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b)});
+  $('#workWrap').classList.toggle('view-grid',b.dataset.view==='grid')});
+
+ // hover peek
+ const peek=$('#peek'); let px=0,py=0,tx=0,ty2=0,raf2;
+ $$('.row',app).forEach(row=>{
+  row.addEventListener('mouseenter',()=>{peek.innerHTML=`<div class="art">${ART[row.dataset.art]()}</div>`;peek.classList.add('on')});
+  row.addEventListener('mouseleave',()=>peek.classList.remove('on'));
+ });
+ const idx=$('.index',app);
+ if(idx){idx.addEventListener('mousemove',e=>{tx=e.clientX+190;ty2=e.clientY;if(!raf2)loop()})}
+ function loop(){px+=(tx-px)*.15;py+=(ty2-py)*.15;peek.style.left=px+'px';peek.style.top=py+'px';raf2=peek.classList.contains('on')||Math.abs(tx-px)>1?requestAnimationFrame(loop):null}
+
+ // accordion
+ $$('.svc-btn',app).forEach(b=>b.onclick=()=>{const row=b.parentElement,open=!row.classList.contains('open');row.classList.toggle('open',open);b.setAttribute('aria-expanded',open)});
+
+ // contact letters scatter on hover
+ const big=$('.contact-big',app);
+ if(big&&!reduce){big.addEventListener('mousemove',e=>{$$('span',big).forEach(s=>{const r=s.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),d=Math.hypot(dx,dy);const f=Math.max(0,1-d/160);s.style.transform=`translateY(${-f*14}px)`})});
+  big.addEventListener('mouseleave',()=>$$('span',big).forEach(s=>s.style.transform=''))}
+
+ // form
+ const f=$('#minForm',app);
+ if(f)f.onsubmit=e=>{e.preventDefault();const em=$('#m-email',f).value,ms=$('#m-msg',f).value,out=$('#formMsg',f);
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){out.textContent='Enter an email like name@company.ch';out.className='form-msg bad';$('#m-email',f).focus();return}
+  if(ms.trim().length<8){out.textContent='Add a short message (8+ characters)';out.className='form-msg bad';$('#m-msg',f).focus();return}
+  out.className='form-msg';out.textContent='Received. Template demo: nothing was sent.';f.reset()};
+
+ // case toc
+ if(r.v==='cs'){
+  $$('.toc a',app).forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const el=document.getElementById(a.dataset.to);lenis?lenis.scrollTo(el,{offset:-80}):el.scrollIntoView({behavior:'smooth'})}));
+  tocIo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){$$('.toc a',app).forEach(a=>a.classList.toggle('on',a.dataset.to===e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});
+  $$('.cs-step',app).forEach(s=>tocIo.observe(s));
+ }
+}
+
+/* progress bar on case studies */
+addEventListener('scroll',()=>{const pr=$('#progress');if(!cur||!cur.startsWith('cs-')){pr.style.transform='scaleX(0)';return}
+ const h=document.documentElement.scrollHeight-innerHeight;pr.style.transform=`scaleX(${h>0?scrollY/h:0})`},{passive:true});
+
+/* global */
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2200)}
+document.addEventListener('click',async e=>{const c=e.target.closest('[data-copy]');if(!c)return;
+ try{await navigator.clipboard.writeText(c.dataset.copy);toast('Copied: '+c.dataset.copy)}catch(err){toast(c.dataset.copy+' — select & copy')}});
+function setGrid(on){document.body.classList.toggle('grid-off',!on);$('#gridBtn').setAttribute('aria-pressed',on);$('#gridBtn').classList.toggle('active',!on)}
+$('#gridBtn').onclick=()=>setGrid(document.body.classList.contains('grid-off'));
+addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();if((e.key==='g'||e.key==='G')&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)&&!e.metaKey&&!e.ctrlKey){setGrid(document.body.classList.contains('grid-off'))}});
+function openMenu(){document.body.classList.add('menu-open');$('#menuBtn').setAttribute('aria-expanded','true');$('#mnav').setAttribute('aria-hidden','false');lenis&&lenis.stop()}
+function closeMenu(){if(!document.body.classList.contains('menu-open'))return;document.body.classList.remove('menu-open');$('#menuBtn').setAttribute('aria-expanded','false');$('#mnav').setAttribute('aria-hidden','true');lenis&&lenis.start()}
+$('#menuBtn').onclick=openMenu;$('#menuClose').onclick=closeMenu;
+$('#toTop').onclick=()=>lenis?lenis.scrollTo(0):scrollTo({top:0,behavior:'smooth'});
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a&&a.getAttribute('href')===location.hash&&!a.dataset.to){e.preventDefault();go()}});
+const tick=()=>{try{$('#clock').textContent=new Intl.DateTimeFormat('de-CH',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Zurich'}).format(new Date())}catch(e){}};tick();setInterval(tick,30000);
+addEventListener('hashchange',go); go();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Netlify settings. Netlify detects Next.js automatically; this file just
+# makes the build command and Node version explicit.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"

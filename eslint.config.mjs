@@ -12,7 +12,15 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    rules: {
+      // Plain <img> keeps image hosting simple and free (no image CDN credits).
+      "@next/next/no-img-element": "off",
+    },
+  },
+  {
     ignores: [
+      "scripts/**",
+      "netlify/**",
       "node_modules/**",
       ".next/**",
       "out/**",

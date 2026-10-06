@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Foliokit: a portfolio template store
 
-## Getting Started
+A complete store for selling portfolio website templates: landing page, template catalogue,
+accounts, secure checkout with Dodo Payments, protected downloads and an admin dashboard.
 
-First, run the development server:
+**New here? Read [SETUP.md](SETUP.md).** It walks you through every account, key and click,
+from an empty laptop to a live store.
+
+## What's inside
+
+| Area | Where |
+|---|---|
+| Landing page | `src/app/page.tsx` |
+| Template catalogue (search, filter, sort) | `src/app/templates/` |
+| Product pages | `src/app/templates/[slug]/page.tsx` |
+| Sign up, log in, password reset | `src/app/(auth)/`, `src/app/auth/` |
+| Customer library, orders, profile | `src/app/account/` |
+| Checkout, payment webhook, downloads | `src/app/api/` |
+| Admin dashboard | `src/app/admin/` |
+| Store name, support email, refund days, reviews | `src/config/site.ts` |
+| Database tables and security rules | `supabase/schema.sql` |
+| Starter templates (content) | `supabase/seed.sql` |
+| Starter template files to sell | `product-files/*.zip` |
+| Live previews and screenshots | `public/previews/`, `public/covers/` |
+
+## Everyday commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install            # once, after downloading the project
+npm run dev            # run the store on http://localhost:3000
+npm run build          # check that everything compiles (Netlify runs this too)
+npm run upload-files   # upload the starter template .zip files to Supabase (once)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How a sale works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. A signed-in customer clicks **Buy**. The server creates a *pending* order and asks Dodo Payments for a checkout page.
+2. The customer pays on Dodo's secure page (cards worldwide, UPI in India).
+3. Dodo calls `/api/webhooks/dodo`. The store checks the signature, marks the order *paid* (exactly once), and the template appears in the customer's library.
+4. Downloads go through `/api/download/[slug]`, which checks the purchase and hands out a private link that expires after 60 seconds.
+5. A full refund in Dodo automatically removes access.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 15 (App Router) · Supabase (Postgres, Auth, Storage) · Dodo Payments · Tailwind CSS 4 · Netlify.
